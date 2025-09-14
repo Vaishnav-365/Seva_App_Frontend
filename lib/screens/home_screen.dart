@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:seva_frontend/screens/attendance_screen.dart';
 import '../widgets/top_banner.dart';
 import '../widgets/category_card.dart';
 import '../widgets/bottom_nav.dart';
@@ -20,7 +21,6 @@ class HomeScreen extends StatelessWidget {
   ];
 
   void _onCategoryTap(BuildContext context, SevaCategory cat) {
-    // TODO: navigate to detailed screen for cat
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Open ${cat.title}')));
   }
 
@@ -29,49 +29,52 @@ class HomeScreen extends StatelessWidget {
     final appState = Provider.of<AppState>(context);
     final user = appState.user;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Seva Home'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () {
-              // sign out via AuthService and navigate to login
-              final auth = Provider.of(context, listen:false);
-              // ignore: avoid_dynamic_calls
-              auth.signOut();
-              Navigator.pushReplacementNamed(context, '/');
-            },
-          )
-        ],
-      ),
-      bottomNavigationBar: const AppBottomNav(currentIndex: 0),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              TopBanner(
-                title: 'Welcome ${user?.name ?? 'Volunteer'}',
-                subtitle: 'Choose your seva and check-in',
-              ),
-              const SizedBox(height: 16),
-              Expanded(
-                child: GridView.builder(
-                  itemCount: categories.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 3/2,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                  ),
-                  itemBuilder: (context, i) {
-                    final cat = categories[i];
-                    return CategoryCard(category: cat, onTap: () => _onCategoryTap(context, cat));
-                  },
+    return ChangeNotifierProvider(
+      create: (_) => AttendanceState(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Seva Home'),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.logout),
+              onPressed: () {
+                // sign out via AuthService and navigate to login
+                final auth = Provider.of(context, listen:false);
+                // ignore: avoid_dynamic_calls
+                auth.signOut();
+                Navigator.pushReplacementNamed(context, '/');
+              },
+            )
+          ],
+        ),
+        bottomNavigationBar: const AppBottomNav(currentIndex: 0),
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                TopBanner(
+                  title: 'Welcome ${user?.name ?? 'Volunteer'}',
+                  subtitle: 'Choose your seva and check-in',
                 ),
-              ),
-            ],
+                const SizedBox(height: 16),
+                Expanded(
+                  child: GridView.builder(
+                    itemCount: categories.length,
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 3/2,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                    ),
+                    itemBuilder: (context, i) {
+                      final cat = categories[i];
+                      return CategoryCard(category: cat, onTap: () => _onCategoryTap(context, cat));
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
