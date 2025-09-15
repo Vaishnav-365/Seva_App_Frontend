@@ -52,37 +52,51 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: SafeArea(
         child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text('Amma\'s Birthday Seva App', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 24),
-                TextField(controller: _email, decoration: const InputDecoration(labelText: 'Email')),
-                const SizedBox(height: 12),
-                TextField(controller: _password, decoration: const InputDecoration(labelText: 'Password'), obscureText: true),
-                const SizedBox(height: 16),
-                if (_error != null) Text(_error!, style: const TextStyle(color: Colors.red)),
-                const SizedBox(height: 8),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _loading ? null : _login,
-                    child: _loading ? const CircularProgressIndicator() : const Text('Sign in'),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Expanded(
+                child: Center(
+                  child: Image.asset(
+                    'assets/images/mata_amrita.png',
+                    width: double.infinity, // or smaller depending on design
+                    fit: BoxFit.cover,
                   ),
                 ),
-                const SizedBox(height: 12),
-                TextButton(
-                  onPressed: () {
-                    // test user
-                    _email.text = 'volunteer@example.com';
-                    _password.text = 'password';
-                  },
-                  child: const Text('Fill demo creds'),
-                )
-              ],
-            ),
+              ),
+              SingleChildScrollView(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text('Amma\'s Birthday Seva App', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 24),
+                    TextField(controller: _email, decoration: const InputDecoration(labelText: 'Email')),
+                    const SizedBox(height: 12),
+                    TextField(controller: _password, decoration: const InputDecoration(labelText: 'Password'), obscureText: true),
+                    const SizedBox(height: 16),
+                    if (_error != null) Text(_error!, style: const TextStyle(color: Colors.red)),
+                    const SizedBox(height: 8),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _loading ? null : _login,
+                        child: _loading ? const CircularProgressIndicator() : const Text('Sign in'),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextButton(
+                      onPressed: () {
+                        // test user
+                        _email.text = 'volunteer@example.com';
+                        _password.text = 'password';
+                      },
+                      child: const Text('Fill demo creds'),
+                    )
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),
