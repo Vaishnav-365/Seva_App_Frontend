@@ -92,6 +92,11 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   final rollController = TextEditingController();
   String statusValue = 'Present';
 
+  final Map<String, String> statusMap = {
+    'In': 'Present',
+    'Out': 'Absent',
+  };
+
   @override
   void dispose() {
     addRollController.dispose();
@@ -191,7 +196,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             ElevatedButton(
               onPressed: () {
                 if (addRollController.text.isEmpty ||
-                    addNameController.text.isEmpty) return;
+                    addNameController.text.isEmpty) {
+                  return;
+                }
                 state.addStudent(Student(
                   rollNo: addRollController.text,
                   name: addNameController.text,
@@ -214,18 +221,28 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             TextField(
                 controller: rollController,
                 decoration: const InputDecoration(labelText: 'Roll No')),
+            // Map between display values and actual logic value
+
             DropdownButton<String>(
-              value: statusValue,
-              items: ['Present', 'Absent'].map((status) {
+              value: statusMap.entries
+                  .firstWhere((e) => e.value == statusValue)
+                  .key, // Show label based on current statusValue
+              items: statusMap.keys.map((label) {
                 return DropdownMenuItem<String>(
-                  value: status,
-                  child: Text(status),
+                  value: label,
+                  child: Text(label), // user sees "In" / "Out"
                 );
               }).toList(),
-              onChanged: (val) {
-                if (val != null) setState(() => statusValue = val);
+              onChanged: (selectedLabel) {
+                if (selectedLabel != null) {
+                  setState(() {
+                    statusValue = statusMap[selectedLabel]!; 
+                    // ✅ still stores "Present"/"Absent" internally
+                  });
+                }
               },
             ),
+
             ElevatedButton(
               onPressed: () {
                 if (rollController.text.isEmpty) return;
