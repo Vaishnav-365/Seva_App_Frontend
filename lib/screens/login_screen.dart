@@ -24,7 +24,8 @@ class _LoginScreenState extends State<LoginScreen> {
     });
     final auth = Provider.of<AuthService>(context, listen: false);
     try {
-      final user = await auth.signInWithEmail(_email.text.trim(), _password.text);
+      final user =
+          await auth.signInWithEmail(_email.text.trim(), _password.text);
       if (user != null) {
         Provider.of<AppState>(context, listen: false).setUser(user);
         if (!mounted) return;
@@ -48,56 +49,103 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       body: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Expanded(
-                child: Center(
-                  child: Image.asset(
-                    'assets/images/mata_amrita.jpg',
-                    width: double.infinity, // or smaller depending on design
-                    fit: BoxFit.cover,
-                  ),
-                ),
+        child: Column(
+          children: [
+            ShaderMask(
+              shaderCallback: (rect) {
+                return const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Colors.white, Colors.transparent],
+                  stops: [0.9, 1.0],
+                ).createShader(rect);
+              },
+              blendMode: BlendMode.dstIn,
+              child: Image.asset(
+                'assets/images/mata_amrita.jpg',
+                width: double.infinity,
+                height: 300,
+                fit: BoxFit.cover,
               ),
-              SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
+            ),
+            const SizedBox(height: 24),
+            Expanded(
+              child: SingleChildScrollView(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text('Amma\'s Birthday Seva App', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            
+                    const Text(
+                      'Amma\'s Birthday Seva App',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 67, 62, 71),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
                     const SizedBox(height: 24),
-                    TextField(controller: _email, decoration: const InputDecoration(labelText: 'Email')),
+                    TextField(
+                      controller: _email,
+                      decoration: const InputDecoration(
+                        labelText: 'Email',
+                        labelStyle: const TextStyle(color: Colors.black), 
+                      
+
+                      ),
+                    ),
                     const SizedBox(height: 12),
-                    TextField(controller: _password, decoration: const InputDecoration(labelText: 'Password'), obscureText: true),
+                    TextField(
+                      controller: _password,
+                      decoration: const InputDecoration(labelText: 'Password',
+                      labelStyle: const TextStyle(color: Colors.black), 
+                      ),
+                      obscureText: true,
+                    ),
                     const SizedBox(height: 16),
-                    if (_error != null) Text(_error!, style: const TextStyle(color: Colors.red)),
+                    if (_error != null)
+                      Text(_error!, style: const TextStyle(color: Colors.red)),
                     const SizedBox(height: 8),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: _loading ? null : _login,
-                        child: _loading ? const CircularProgressIndicator() : const Text('Sign in'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color.fromARGB(
+                              255, 0, 0, 0), 
+                          foregroundColor: Colors.white,
+                        ), // text color
+                        child: _loading
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const Text('Sign in'),
                       ),
                     ),
                     const SizedBox(height: 12),
                     TextButton(
                       onPressed: () {
-                        // test user
                         _email.text = 'volunteer@example.com';
                         _password.text = 'password';
                       },
-                      child: const Text('Fill demo creds'),
-                    )
+                      child: const Text(
+                        'Fill demo creds',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
