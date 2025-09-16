@@ -92,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       controller: _email,
                       decoration: const InputDecoration(
                         labelText: 'Email',
-                        labelStyle: const TextStyle(color: Colors.black), 
+                        labelStyle: TextStyle(color: Colors.black), 
                       
 
                       ),
@@ -101,7 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     TextField(
                       controller: _password,
                       decoration: const InputDecoration(labelText: 'Password',
-                      labelStyle: const TextStyle(color: Colors.black), 
+                      labelStyle: TextStyle(color: Colors.black), 
                       ),
                       obscureText: true,
                     ),
