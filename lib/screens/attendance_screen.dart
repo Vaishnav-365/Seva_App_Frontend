@@ -87,6 +87,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   final addSemesterController = TextEditingController();
 
   String committeeValue = 'Help';
+  String? selectedCommittee;
 
   // Controllers for attendance update
   final rollController = TextEditingController();
@@ -111,6 +112,13 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   Widget build(BuildContext context) {
     final state = Provider.of<AttendanceState>(context);
 
+    // 🔹 Filter students list here (outside widget tree)
+    final filteredStudents = selectedCommittee == null
+        ? state.students
+        : state.students
+            .where((s) => s.committee == selectedCommittee)
+            .toList();
+
     return Scaffold(
       appBar: AppBar(title: const Text('Attendance')),
       body: SingleChildScrollView(
@@ -133,7 +141,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
 
                   for (var sheetName in excel.tables.keys) {
                     final sheet = excel.tables[sheetName]!;
-                    for (var row in sheet.rows.skip(1)) { // skip header
+                    for (var row in sheet.rows.skip(1)) {
+                      // skip header
                       final rollNo = row[0]?.value.toString() ?? '';
                       final name = row[1]?.value.toString() ?? '';
                       final batch = row[2]?.value.toString() ?? '';
@@ -236,7 +245,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               onChanged: (selectedLabel) {
                 if (selectedLabel != null) {
                   setState(() {
-                    statusValue = statusMap[selectedLabel]!; 
+                    statusValue = statusMap[selectedLabel]!;
                     // ✅ still stores "Present"/"Absent" internally
                   });
                 }
@@ -262,6 +271,45 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             ),
             const SizedBox(height: 20),
 
+            // --- Filter by Committee ---
+            Wrap(
+              spacing: 10,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                const Text("Filter by Seva: "),
+                DropdownButton<String>(
+                  value: selectedCommittee,
+                  hint: const Text("All"),
+                  items: <String>[
+                    'Help',
+                    'Volunteer Care',
+                    'Plate Washing',
+                    'Venue Maintenance',
+                    'Special Invitees',
+                    'Press & Media',
+                    'Cultural'
+                  ].map((value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (newVal) {
+                    setState(() {
+                      selectedCommittee = newVal;
+                    });
+                  },
+                ),
+                if (selectedCommittee != null)
+                  TextButton(
+                    onPressed: () {
+                      setState(() => selectedCommittee = null); // reset filter
+                    },
+                    child: const Text("Clear"),
+                  ),
+              ],
+            ),
+
             // --- Student List ---
             Text('Students List',
                 style: Theme.of(context).textTheme.titleMedium),
@@ -269,9 +317,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: state.students.length,
+              itemCount: filteredStudents.length,
               itemBuilder: (context, index) {
-                final s = state.students[index];
+                final s = filteredStudents[index];
                 return ListTile(
                   title: Text('${s.name} (${s.rollNo})'),
                   subtitle: Text(
