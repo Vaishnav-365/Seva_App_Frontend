@@ -1,0 +1,4 @@
+#Tue Sep 16 20:51:22 IST 2025
+base.0=D\:\\Documents\\Flutter\\seva_frontend\\android\\app\\build\\intermediates\\dex\\release\\minifyReleaseWithR8\\classes.dex
+renamed.0=classes.dex
+path.0=classes.dex

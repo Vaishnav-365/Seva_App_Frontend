@@ -58,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Expanded(
                 child: Center(
                   child: Image.asset(
-                    'assets/images/mata_amrita.png',
+                    'assets/images/mata_amrita.jpg',
                     width: double.infinity, // or smaller depending on design
                     fit: BoxFit.cover,
                   ),
